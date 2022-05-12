@@ -1,0 +1,38 @@
+.header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  padding-top: 60px;
+  min-height: 100vh;
+
+  &__container {
+    justify-content: space-between;
+
+    @extend %flex-row-center;
+    @extend %layout-container;
+
+    aside {
+      flex: 1;
+      font-size: 1.5rem;
+
+      h1 {
+        margin: 1rem 0;
+      }
+    }
+
+    img {
+      width: 60%;
+    }
+  }
+
+  &__cover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    opacity: 0.4;
+  }
+}

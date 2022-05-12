@@ -1,0 +1,27 @@
+$row-size_col-margin-small : 10px;
+
+.container {
+  @extend %layout-container;
+}
+
+.row {
+  display: flex;
+  overflow: hidden;
+  flex-wrap: wrap;
+  margin: 0 -$row-size_col-margin-small;
+
+  &__col {
+    flex: 1;
+  }
+
+  @for $itemNumber from 1 to 13 {
+    &__col--#{$itemNumber} {
+      flex: 0 0 100% / $itemNumber;
+      padding: $row-size_col-margin-small;
+
+      @include phone-width() {
+        flex-basis: 100%;
+      }
+    }
+  }
+}
