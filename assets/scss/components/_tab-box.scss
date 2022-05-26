@@ -1,0 +1,27 @@
+.tab-box {
+  display: flex;
+  flex-direction: column;
+  background-color: $color_accent;
+  section {
+    > img {
+      width: 100%;
+    }
+  }
+}
+
+.tab-box__header {
+  display: flex;
+  padding-left: 0;
+  background-color: $color_auxiliary;
+  list-style: none;
+}
+
+.tab-box__header > li {
+  padding: 20px;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.tab-box__header > li.active {
+  color: $color_auxiliary-light;
+}
