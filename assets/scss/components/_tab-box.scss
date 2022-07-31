@@ -7,6 +7,13 @@
       width: 100%;
     }
   }
+
+  &--chart {
+    > section {
+      padding: 20px;
+      background-color: $color_white;
+    }
+  }
 }
 
 .tab-box__header {

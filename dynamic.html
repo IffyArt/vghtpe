@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>wisdom</title>
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <!-- 引入 AOS 樣式 https://michalsnik.github.io/aos/ -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <article class="navbar__container">
+        <a class="navbar__logo" href="index.html">回首頁</a>
+      </article>
+    </nav>
+    <header class="header">
+      <article class="header__container">
+        <aside>
+          <h2>Dynamic Indicator</h2>
+          <h1>動態指標區塊</h1>
+        </aside>
+        <img src="assets/images/dynamic.png" />
+      </article>
+      <article id="particles-js" class="header__cover"></article>
+    </header>
+    <main class="container">
+      <article class="tab-box tab-box--chart" id="tab-box">
+        <ol class="tab-box__header">
+          <li>平均登入報表</li>
+          <li>登入時刻比例</li>
+          <li>練線位置分析</li>
+          <li>連線來源分佈</li>
+          <li>連線位置分時解析</li>
+        </ol>
+        <section>
+          <img src="assets/images/整合輸出網頁-1.png" alt="" srcset="" />
+        </section>
+        <section>
+          <img src="assets/images/整合輸出網頁-2.png" alt="" srcset="" />
+        </section>
+        <section>
+          <img src="assets/images/整合輸出網頁-3.png" alt="" srcset="" />
+        </section>
+        <section>
+          <img src="assets/images/整合輸出網頁-4.png" alt="" srcset="" />
+        </section>
+        <section>
+          <img src="assets/images/整合輸出網頁-5.png" alt="" srcset="" />
+        </section>
+      </article>
+    </main>
+
+    <footer class="footer">
+      <p class="container">© Copyright 2015 by VGHTPE. All Rights Reserved.</p>
+    </footer>
+    <!-- 引入 AOS 函式庫 https://michalsnik.github.io/aos/ -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- 引入 Particles 函式庫 https://vincentgarreau.com/particles.js/#snow -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="assets/js/tabs.js"></script>
+    <script>
+      // 啟動網頁上的 AOS 應用
+      AOS.init();
+
+      // 啟動網頁上的 particlesJS 應用
+      particlesJS.load('particles-js', 'assets/js/particles.json', function () {
+        console.log('callback - particles.js config loaded');
+      });
+    </script>
+  </body>
+</html>
