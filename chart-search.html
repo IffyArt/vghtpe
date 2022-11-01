@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <!-- 引入 AOS 樣式 https://michalsnik.github.io/aos/ -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  </head>
+  <body>
+    <nav class="navbar">
+      <article class="navbar__container">
+        <a class="navbar__logo" href="index.html">回首頁</a>
+      </article>
+    </nav>
+    <header class="header">
+      <article class="header__container">
+        <aside>
+          <h2>Dynamic Indicator</h2>
+          <h1>動態指標區塊</h1>
+        </aside>
+        <img src="assets/images/dynamic.png" />
+      </article>
+      <article id="particles-js" class="header__cover"></article>
+    </header>
+    <main class="container">
+      <article class="tab-box tab-box--chart" id="tab-box">
+        <ol class="tab-box__header">
+          <li>來管男女佔比</li>
+          <li>出生地分析</li>
+        </ol>
+        <section>
+          <from class="mb-3">
+            <div class="mb-3">
+              <label for="exampleFormControlTextarea1" class="form-label"
+                >選擇出生地</label
+              >
+              <select
+                id="birthplaces"
+                class="form-select form-select-lg mb-3"
+                aria-label=".form-select-lg example"
+              >
+                <option selected>請選擇項目</option>
+                <option value="臺北市">臺北市</option>
+                <option value="新北市">新北市</option>
+                <option value="桃園市">桃園市</option>
+                <option value="臺中市">臺中市</option>
+                <option value="臺南市">臺南市</option>
+                <option value="高雄市">高雄市</option>
+                <option value="新竹縣">新竹縣</option>
+                <option value="苗栗縣">苗栗縣</option>
+                <option value="彰化縣">彰化縣</option>
+                <option value="南投縣">南投縣</option>
+                <option value="雲林縣">雲林縣</option>
+                <option value="嘉義縣">嘉義縣</option>
+                <option value="屏東縣">屏東縣</option>
+                <option value="宜蘭縣">宜蘭縣</option>
+                <option value="花蓮縣">花蓮縣</option>
+                <option value="臺東縣">臺東縣</option>
+                <option value="澎湖縣">澎湖縣</option>
+                <option value="金門縣">金門縣</option>
+                <option value="連江縣">連江縣</option>
+                <option value="基隆市">基隆市</option>
+                <option value="新竹市">新竹市</option>
+                <option value="嘉義市">嘉義市</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="exampleFormControlTextarea1" class="form-label"
+                >選擇星座</label
+              >
+              <select
+                id="constellations"
+                class="form-select form-select-lg mb-3"
+                aria-label=".form-select-lg example"
+              >
+                <option selected>請選擇項目</option>
+                <option value="牡羊座">牡羊座</option>
+                <option value="金牛座">金牛座</option>
+                <option value="雙子座">雙子座</option>
+                <option value="巨蟹座">巨蟹座</option>
+                <option value="獅子座">獅子座</option>
+                <option value="處女座">處女座</option>
+                <option value="天秤座">天秤座</option>
+                <option value="天蠍座">天蠍座</option>
+                <option value="射手座">射手座</option>
+                <option value="摩羯座">摩羯座</option>
+                <option value="水瓶座">水瓶座</option>
+                <option value="雙魚座">雙魚座</option>
+              </select>
+            </div>
+            <button
+              type="submit"
+              class="btn btn-primary mb-3"
+              id="ratioGenderSubmit"
+            >
+              搜尋
+            </button>
+          </from>
+          <canvas id="ratioGender" width="400" height="400"></canvas>
+        </section>
+        <section>
+          <canvas id="birthplace" width="400" height="400"></canvas>
+        </section>
+      </article>
+    </main>
+
+    <footer class="footer">
+      <p class="container">© Copyright 2015 by VGHTPE. All Rights Reserved.</p>
+    </footer>
+
+    <!-- 引入 AOS 函式庫 https://michalsnik.github.io/aos/ -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- 引入 Particles 函式庫 https://vincentgarreau.com/particles.js/#snow -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="assets/js/tabs.js"></script>
+    <script type="module">
+      import myJson from './assets/js/person.json' assert { type: 'json' };
+      const birthplaces = [
+        '臺北市',
+        '新北市',
+        '桃園市',
+        '臺中市',
+        '臺南市',
+        '高雄市',
+        '新竹縣',
+        '苗栗縣',
+        '彰化縣',
+        '南投縣',
+        '雲林縣',
+        '嘉義縣',
+        '屏東縣',
+        '宜蘭縣',
+        '花蓮縣',
+        '臺東縣',
+        '澎湖縣',
+        '金門縣',
+        '連江縣',
+        '基隆市',
+        '新竹市',
+        '嘉義市',
+      ];
+      const constellations = [
+        '牡羊座',
+        '金牛座',
+        '雙子座',
+        '巨蟹座',
+        '獅子座',
+        '處女座',
+        '天秤座',
+        '天蠍座',
+        '射手座',
+        '摩羯座',
+        '水瓶座',
+        '雙魚座',
+      ];
+      const sourceData = [...myJson];
+
+      const ratioGenderSubmit = document.getElementById('ratioGenderSubmit');
+      let ratioGenderCanvas = document
+        .getElementById('ratioGender')
+        .getContext('2d');
+
+      const birthplaceSubmit = document.getElementById('birthplaceSubmit');
+      let birthplaceCanvas = document
+        .getElementById('birthplace')
+        .getContext('2d');
+
+      ratioGenderSubmit.addEventListener('click', (event) => {
+        event.preventDefault();
+        const birthplaceValue = document.getElementById('birthplaces');
+        const constellationValue = document.getElementById('constellations');
+
+        const filterCondition = [
+          birthplaceValue.value !== '請選擇項目' && {
+            key: 'birthplace',
+            value: birthplaceValue.value,
+          },
+          constellationValue.value !== '請選擇項目' && {
+            key: 'constellation',
+            value: constellationValue.value,
+          },
+        ].filter((condition) => condition);
+
+        let filterSourceData = sourceData;
+
+        // 需修改為一次 filter
+        filterCondition.map((condition) => {
+          filterSourceData = filterSourceData.filter(
+            (item) => item[condition.key] === condition.value,
+          );
+        });
+
+        const initData = [
+          filterSourceData.filter((item) => item.gender === '男').length,
+          filterSourceData.filter((item) => item.gender === '女').length,
+        ];
+
+        if (ratioGenderCanvas instanceof Chart) {
+          ratioGenderCanvas.destroy();
+          ratioGenderCanvas = document
+            .getElementById('ratioGender')
+            .getContext('2d');
+        }
+
+        ratioGenderCanvas = new Chart(ratioGenderCanvas, {
+          type: 'doughnut',
+          data: {
+            labels: ['男性', '女性'],
+            datasets: [
+              {
+                label: '來管男女佔比分析圖表',
+                data: initData,
+                backgroundColor: ['rgb(255, 99, 132)', 'rgb(54, 162, 235)'],
+                hoverOffset: 4,
+              },
+            ],
+          },
+        });
+      });
+
+      let birthplacesMenData = birthplaces.map(
+        (birthplace) =>
+          sourceData.filter(
+            (data) => data.birthplace === birthplace && data.gender === '男',
+          ).length,
+      );
+      console.log(birthplacesMenData);
+      let birthplacesWomenData = birthplaces.map(
+        (birthplace) =>
+          sourceData.filter(
+            (data) => data.birthplace === birthplace && data.gender === '女',
+          ).length,
+      );
+
+      if (birthplaceCanvas instanceof Chart) {
+        birthplaceCanvas.destroy();
+        birthplaceCanvas = document
+          .getElementById('ratioGender')
+          .getContext('2d');
+      }
+
+      birthplaceCanvas = new Chart(birthplaceCanvas, {
+        type: 'bar',
+        data: {
+          labels: birthplaces,
+          datasets: [
+            {
+              label: '男性',
+              data: birthplacesMenData,
+              backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(255, 205, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(201, 203, 207, 0.2)',
+              ],
+              borderColor: [
+                'rgb(255, 99, 132)',
+                'rgb(255, 159, 64)',
+                'rgb(255, 205, 86)',
+                'rgb(75, 192, 192)',
+                'rgb(54, 162, 235)',
+                'rgb(153, 102, 255)',
+                'rgb(201, 203, 207)',
+              ],
+              borderWidth: 1,
+            },
+            {
+              label: '女性',
+              data: birthplacesWomenData,
+              backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(255, 205, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(201, 203, 207, 0.2)',
+              ],
+              borderColor: [
+                'rgb(255, 99, 132)',
+                'rgb(255, 159, 64)',
+                'rgb(255, 205, 86)',
+                'rgb(75, 192, 192)',
+                'rgb(54, 162, 235)',
+                'rgb(153, 102, 255)',
+                'rgb(201, 203, 207)',
+              ],
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
+          },
+        },
+      });
+
+      ratioGenderSubmit.click();
+    </script>
+  </body>
+</html>
