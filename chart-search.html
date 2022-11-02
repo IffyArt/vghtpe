@@ -136,9 +136,9 @@
     <!-- 引入 Particles 函式庫 https://vincentgarreau.com/particles.js/#snow -->
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="assets/js/person.js"></script>
     <script src="assets/js/tabs.js"></script>
     <script type="module">
-      import myJson from './assets/js/person.json' assert { type: 'json' };
       const birthplaces = [
         '臺北市',
         '新北市',
@@ -177,7 +177,6 @@
         '水瓶座',
         '雙魚座',
       ];
-      const sourceData = [...myJson];
 
       const ratioGenderSubmit = document.getElementById('ratioGenderSubmit');
       let ratioGenderCanvas = document
@@ -260,7 +259,7 @@
             (data) => new Date(endTimeValue.value) > new Date(data.birthday),
           );
         }
-        console.log(filterSourceData);
+
         let birthplacesMenData = birthplaces.map(
           (birthplace) =>
             filterSourceData.filter(
