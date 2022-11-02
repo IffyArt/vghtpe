@@ -35,15 +35,33 @@
     <main class="container">
       <article class="tab-box tab-box--chart" id="tab-box">
         <ol class="tab-box__header">
-          <li>來管男女佔比</li>
           <li>出生地分析</li>
+          <li>來管男女佔比</li>
         </ol>
         <section>
           <from class="mb-3">
             <div class="mb-3">
-              <label for="exampleFormControlTextarea1" class="form-label"
-                >選擇出生地</label
-              >
+              <label for="startTime" class="form-label">起始時間</label>
+              <input type="date" class="form-control" id="startTime" />
+            </div>
+            <div class="mb-3">
+              <label for="endTime" class="form-label">結束時間</label>
+              <input type="date" class="form-control" id="endTime" />
+            </div>
+            <button
+              type="submit"
+              class="btn btn-primary mb-3"
+              id="birthplaceSubmit"
+            >
+              搜尋
+            </button>
+          </from>
+          <canvas id="birthplace" width="400" height="400"></canvas>
+        </section>
+        <section>
+          <from class="mb-3">
+            <div class="mb-3">
+              <label for="birthplaces" class="form-label">選擇出生地</label>
               <select
                 id="birthplaces"
                 class="form-select form-select-lg mb-3"
@@ -75,9 +93,7 @@
               </select>
             </div>
             <div class="mb-3">
-              <label for="exampleFormControlTextarea1" class="form-label"
-                >選擇星座</label
-              >
+              <label for="constellations" class="form-label">選擇星座</label>
               <select
                 id="constellations"
                 class="form-select form-select-lg mb-3"
@@ -107,9 +123,6 @@
             </button>
           </from>
           <canvas id="ratioGender" width="400" height="400"></canvas>
-        </section>
-        <section>
-          <canvas id="birthplace" width="400" height="400"></canvas>
         </section>
       </article>
     </main>
@@ -229,89 +242,110 @@
         });
       });
 
-      let birthplacesMenData = birthplaces.map(
-        (birthplace) =>
-          sourceData.filter(
-            (data) => data.birthplace === birthplace && data.gender === '男',
-          ).length,
-      );
-      console.log(birthplacesMenData);
-      let birthplacesWomenData = birthplaces.map(
-        (birthplace) =>
-          sourceData.filter(
-            (data) => data.birthplace === birthplace && data.gender === '女',
-          ).length,
-      );
+      birthplaceSubmit.addEventListener('click', (event) => {
+        event.preventDefault();
+        const startTimeValue = document.getElementById('startTime');
+        const endTimeValue = document.getElementById('endTime');
 
-      if (birthplaceCanvas instanceof Chart) {
-        birthplaceCanvas.destroy();
-        birthplaceCanvas = document
-          .getElementById('ratioGender')
-          .getContext('2d');
-      }
+        let filterSourceData = sourceData;
 
-      birthplaceCanvas = new Chart(birthplaceCanvas, {
-        type: 'bar',
-        data: {
-          labels: birthplaces,
-          datasets: [
-            {
-              label: '男性',
-              data: birthplacesMenData,
-              backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(255, 159, 64, 0.2)',
-                'rgba(255, 205, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(201, 203, 207, 0.2)',
-              ],
-              borderColor: [
-                'rgb(255, 99, 132)',
-                'rgb(255, 159, 64)',
-                'rgb(255, 205, 86)',
-                'rgb(75, 192, 192)',
-                'rgb(54, 162, 235)',
-                'rgb(153, 102, 255)',
-                'rgb(201, 203, 207)',
-              ],
-              borderWidth: 1,
-            },
-            {
-              label: '女性',
-              data: birthplacesWomenData,
-              backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(255, 159, 64, 0.2)',
-                'rgba(255, 205, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(201, 203, 207, 0.2)',
-              ],
-              borderColor: [
-                'rgb(255, 99, 132)',
-                'rgb(255, 159, 64)',
-                'rgb(255, 205, 86)',
-                'rgb(75, 192, 192)',
-                'rgb(54, 162, 235)',
-                'rgb(153, 102, 255)',
-                'rgb(201, 203, 207)',
-              ],
-              borderWidth: 1,
-            },
-          ],
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true,
+        if (startTimeValue.value) {
+          filterSourceData = filterSourceData.filter(
+            (data) => new Date(startTimeValue.value) < new Date(data.birthday),
+          );
+        }
+
+        if (endTimeValue.value) {
+          filterSourceData = filterSourceData.filter(
+            (data) => new Date(endTimeValue.value) > new Date(data.birthday),
+          );
+        }
+        console.log(filterSourceData);
+        let birthplacesMenData = birthplaces.map(
+          (birthplace) =>
+            filterSourceData.filter(
+              (data) => data.birthplace === birthplace && data.gender === '男',
+            ).length,
+        );
+
+        let birthplacesWomenData = birthplaces.map(
+          (birthplace) =>
+            filterSourceData.filter(
+              (data) => data.birthplace === birthplace && data.gender === '女',
+            ).length,
+        );
+
+        if (birthplaceCanvas instanceof Chart) {
+          birthplaceCanvas.destroy();
+          birthplaceCanvas = document
+            .getElementById('birthplace')
+            .getContext('2d');
+        }
+
+        birthplaceCanvas = new Chart(birthplaceCanvas, {
+          type: 'bar',
+          data: {
+            labels: birthplaces,
+            datasets: [
+              {
+                label: '男性',
+                data: birthplacesMenData,
+                backgroundColor: [
+                  'rgba(255, 99, 132, 0.2)',
+                  'rgba(255, 159, 64, 0.2)',
+                  'rgba(255, 205, 86, 0.2)',
+                  'rgba(75, 192, 192, 0.2)',
+                  'rgba(54, 162, 235, 0.2)',
+                  'rgba(153, 102, 255, 0.2)',
+                  'rgba(201, 203, 207, 0.2)',
+                ],
+                borderColor: [
+                  'rgb(255, 99, 132)',
+                  'rgb(255, 159, 64)',
+                  'rgb(255, 205, 86)',
+                  'rgb(75, 192, 192)',
+                  'rgb(54, 162, 235)',
+                  'rgb(153, 102, 255)',
+                  'rgb(201, 203, 207)',
+                ],
+                borderWidth: 1,
+              },
+              {
+                label: '女性',
+                data: birthplacesWomenData,
+                backgroundColor: [
+                  'rgba(255, 99, 132, 0.2)',
+                  'rgba(255, 159, 64, 0.2)',
+                  'rgba(255, 205, 86, 0.2)',
+                  'rgba(75, 192, 192, 0.2)',
+                  'rgba(54, 162, 235, 0.2)',
+                  'rgba(153, 102, 255, 0.2)',
+                  'rgba(201, 203, 207, 0.2)',
+                ],
+                borderColor: [
+                  'rgb(255, 99, 132)',
+                  'rgb(255, 159, 64)',
+                  'rgb(255, 205, 86)',
+                  'rgb(75, 192, 192)',
+                  'rgb(54, 162, 235)',
+                  'rgb(153, 102, 255)',
+                  'rgb(201, 203, 207)',
+                ],
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+              },
             },
           },
-        },
+        });
       });
 
+      birthplaceSubmit.click();
       ratioGenderSubmit.click();
     </script>
   </body>
