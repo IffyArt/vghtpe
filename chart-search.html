@@ -35,9 +35,46 @@
     <main class="container">
       <article class="tab-box tab-box--chart" id="tab-box">
         <ol class="tab-box__header">
+          <li>開課2021</li>
           <li>出生地分析</li>
           <li>來管男女佔比</li>
         </ol>
+        <section>
+          <from class="mb-3">
+            <div class="mb-3">
+              <label for="startCourseTime" class="form-label">起始時間</label>
+              <input
+                type="date"
+                class="form-control"
+                id="startCourseTime"
+                value="2021-01-01"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="endCourseTime" class="form-label">結束時間</label>
+              <input type="date" class="form-control" id="endCourseTime" />
+            </div>
+            <div class="mb-3">
+              <label for="unit" class="form-label">選擇單位</label>
+              <select
+                id="unit"
+                class="form-select form-select-lg mb-3"
+                aria-label=".form-select-lg example"
+              >
+                <option selected>請選擇項目</option>
+              </select>
+            </div>
+            <div class="mb-3" id="people-number"></div>
+            <button
+              type="submit"
+              class="btn btn-primary mb-3"
+              id="courseSubmit"
+            >
+              搜尋
+            </button>
+          </from>
+          <canvas id="course" width="400" height="400"></canvas>
+        </section>
         <section>
           <from class="mb-3">
             <div class="mb-3">
@@ -136,6 +173,7 @@
     <!-- 引入 Particles 函式庫 https://vincentgarreau.com/particles.js/#snow -->
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="assets/js/courseData.js"></script>
     <script src="assets/js/person.js"></script>
     <script src="assets/js/tabs.js"></script>
     <script type="module">
@@ -177,6 +215,27 @@
         '水瓶座',
         '雙魚座',
       ];
+      const unitSelect = document.getElementById('unit');
+
+      const units = new Set();
+
+      courseData.forEach((element) => {
+        units.add(element.courseUnit);
+      });
+
+      const createUnitOptions = () => {
+        let optionsHtml = '<option value="" selected>請選擇項目</option>';
+        units.forEach(
+          (item) => (optionsHtml += `<option value="${item}">${item}</option>`),
+        );
+        unitSelect.innerHTML = optionsHtml;
+      };
+
+      createUnitOptions();
+
+      // 舊的測試資料
+      const courseSubmit = document.getElementById('courseSubmit');
+      let courseCanvas = document.getElementById('course').getContext('2d');
 
       const ratioGenderSubmit = document.getElementById('ratioGenderSubmit');
       let ratioGenderCanvas = document
@@ -187,6 +246,82 @@
       let birthplaceCanvas = document
         .getElementById('birthplace')
         .getContext('2d');
+
+      courseSubmit.addEventListener('click', (event) => {
+        event.preventDefault();
+        let totalNumber = 0;
+        const startTime = document.getElementById('startCourseTime');
+        const endTime = document.getElementById('endCourseTime');
+
+        let filterSourceData = courseData;
+
+        if (startTime.value) {
+          filterSourceData = filterSourceData.filter(
+            (data) => new Date(startTime.value) <= new Date(data.startDate),
+          );
+        }
+
+        if (endTime.value) {
+          filterSourceData = filterSourceData.filter(
+            (data) => new Date(endTime.value) >= new Date(data.endDate),
+          );
+        }
+
+        if (unitSelect.value !== '') {
+          filterSourceData = filterSourceData.filter(
+            (unit) => unit.courseUnit === unitSelect.value,
+          );
+        }
+
+        if (courseCanvas instanceof Chart) {
+          courseCanvas.destroy();
+          courseCanvas = document.getElementById('course').getContext('2d');
+        }
+
+        document.getElementById(
+          'people-number',
+        ).innerHTML = `總通過人數： ${filterSourceData.reduce(
+          (accumulator, currentValue) =>
+            accumulator + Number(currentValue.passNumber),
+          0,
+        )}人`;
+
+        const data = {
+          labels: filterSourceData.map((item) => item.no),
+          datasets: [
+            {
+              label: '課程',
+              data: filterSourceData.map((item) => item.passNumber),
+              backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(255, 159, 64, 0.2)',
+                'rgba(255, 205, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(201, 203, 207, 0.2)',
+              ],
+            },
+          ],
+        };
+
+        courseCanvas = new Chart(courseCanvas, {
+          type: 'bar',
+          data: data,
+          options: {
+            responsive: true,
+            plugins: {
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: '課程表格',
+              },
+            },
+          },
+        });
+      });
 
       ratioGenderSubmit.addEventListener('click', (event) => {
         event.preventDefault();
@@ -344,6 +479,7 @@
         });
       });
 
+      courseSubmit.click();
       birthplaceSubmit.click();
       ratioGenderSubmit.click();
     </script>
